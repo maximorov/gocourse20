@@ -66,6 +66,7 @@ func NewPrimaryKey[S PrimaryKeySrc](key S) PrimaryKey {
 	return nil
 }
 
+// Single Responsibility Principle
 type primaryKey struct {
 	tp      PKType
 	key     map[string]any

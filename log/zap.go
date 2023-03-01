@@ -25,6 +25,7 @@ var (
 )
 
 type (
+	//  Open-Closed Principle
 	zapConfiger struct {
 		zc *zap.Config
 	}

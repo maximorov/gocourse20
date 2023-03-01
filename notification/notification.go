@@ -1,4 +1,4 @@
-package main
+package notification
 
 import (
 	"context"
@@ -12,6 +12,7 @@ const (
 	PayloadTypeSnapshot PayloadType = `snapshot`
 )
 
+// Interface Segregation Principle
 type (
 	Queryer func(ctx context.Context, query string) ([]byte, error)
 

@@ -3,6 +3,7 @@ package sender
 import (
 	"context"
 	"fmt"
+	"solid/notification"
 	"sync"
 	"time"
 )
@@ -10,16 +11,18 @@ import (
 const targetTTL = 5 * time.Minute
 
 type Target interface {
-	Send(context.Context, ol.Notification, ol.ItemToProcess) error
+	Send(context.Context, notification.Notification, notification.ItemToProcess) error
 	Die() error
 }
 
+// Dependency Inversion Principle
 type Transport interface {
 	Name() string
-	Create(ol.Notification) (Target, error)
+	Create(notification notification.Notification) (Target, error)
 }
 
-func NewSender(ts ...Transport) ol.Sender {
+// Open-Closed Principle
+func NewSender(ts ...Transport) notification.Sender {
 	res := &sender{
 		transports: ts,
 		mu:         sync.RWMutex{},
@@ -37,7 +40,7 @@ type sender struct {
 	_targets   map[int]Target
 }
 
-func (s *sender) Send(ctx context.Context, n ol.Notification, i ol.ItemToProcess) error {
+func (s *sender) Send(ctx context.Context, n notification.Notification, i notification.ItemToProcess) error {
 	for _, transport := range s.transports {
 		if transport.Name() == n.Transport() {
 			if t, err := s.initTarget(transport, n); err != nil {
@@ -51,7 +54,7 @@ func (s *sender) Send(ctx context.Context, n ol.Notification, i ol.ItemToProcess
 	return fmt.Errorf(`transport %s not defined`, n.Transport())
 }
 
-func (s *sender) initTarget(tp Transport, n ol.Notification) (Target, error) {
+func (s *sender) initTarget(tp Transport, n notification.Notification) (Target, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

@@ -2,7 +2,8 @@ package transport
 
 import (
 	"context"
-	"solid/l/sender"
+	"solid/notification"
+	"solid/sender"
 )
 
 func NewHttpCreator() sender.Transport {
@@ -16,14 +17,14 @@ func (s *httpCreator) Name() string {
 	return `http`
 }
 
-func (s httpCreator) Create(_ ol.Notification) (sender.Target, error) {
+func (s httpCreator) Create(_ notification.Notification) (sender.Target, error) {
 	return &httpTransport{}, nil
 }
 
 type httpTransport struct {
 }
 
-func (s *httpTransport) Send(_ context.Context, _ ol.Notification, _ ol.ItemToProcess) error {
+func (s *httpTransport) Send(_ context.Context, _ notification.Notification, _ notification.ItemToProcess) error {
 	panic(`Not implemented`)
 }
 
