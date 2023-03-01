@@ -17,14 +17,18 @@ type (
 	Queryer func(ctx context.Context, query string) ([]byte, error)
 
 	Notification interface {
-		AllTargets() []Target
-		GetTarget(string) Target
+		NotificationTargets
 		Description() string
 		GraphqlQuery(context.Context) ([]byte, error)
 		Transport() string
 		ID() int
 		IsItPossible() (bool, error)
 		TargetSettings() string
+	}
+
+	NotificationTargets interface {
+		AllTargets() []Target
+		GetTarget(string) Target
 	}
 
 	Target interface {

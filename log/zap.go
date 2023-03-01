@@ -20,13 +20,13 @@ const customWriterKeyPrefix = `customwriter`
 
 var (
 	registerGcpOnce            = new(sync.Once)
-	_               Optionable = &zapConfiger{}
+	_               Optionable = &ZapConfiger{}
 	_               Logger     = &ZapExtended{}
 )
 
 type (
 	//  Open-Closed Principle
-	zapConfiger struct {
+	ZapConfiger struct {
 		zc *zap.Config
 	}
 
@@ -35,7 +35,7 @@ type (
 	}
 )
 
-func (zo *zapConfiger) SetEnvironment(env EnvEnum) {
+func (zo *ZapConfiger) SetEnvironment(env EnvEnum) {
 	var zc zap.Config
 
 	switch env {
@@ -51,30 +51,34 @@ func (zo *zapConfiger) SetEnvironment(env EnvEnum) {
 	zo.zc = &zc
 }
 
-func (zo *zapConfiger) SetServiceVersion(version string) {
+func (zo *ZapConfiger) SetServiceVersion(version string) {
 	if zo.zc.InitialFields == nil {
 		zo.zc.InitialFields = make(map[string]any)
 	}
 	zo.zc.InitialFields[`service.version`] = version
 }
 
-func (zo *zapConfiger) SetFormatter(encoding FormatterTypeEnum) {
+func (zo *ZapConfiger) SetFormatter(encoding FormatterTypeEnum) {
 	zo.zc.Encoding = regularToZapEncoding(encoding)
 }
 
-func (zo *zapConfiger) SetLevel(level LevelEnum) {
+func (zo *ZapConfiger) SetLevel(level LevelEnum) {
 	zo.zc.Level = zap.NewAtomicLevelAt(regularToZapLevel(level))
 }
 
-func (zo *zapConfiger) SetEnableCaller(enable bool) {
+func (zo *ZapConfiger) SetEnableCaller(enable bool) {
 	zo.zc.DisableCaller = !enable
 }
 
-func (zo *zapConfiger) SetEnableStacktrace(enable bool) {
+func (zo *ZapConfiger) SetEnableStacktrace(enable bool) {
 	zo.zc.DisableStacktrace = !enable
 }
 
-func (zo *zapConfiger) SetOutput(output io.Writer) {
+func (zo *ZapConfiger) DoSometing() {
+	fmt.Print(`Something`)
+}
+
+func (zo *ZapConfiger) SetOutput(output io.Writer) {
 	switch output {
 	case os.Stdout:
 		zo.zc.OutputPaths = []string{`stdout`}
@@ -92,7 +96,7 @@ func (zo *zapConfiger) SetOutput(output io.Writer) {
 	}
 }
 
-func (zo *zapConfiger) build(opts ...Option) zap.Config {
+func (zo *ZapConfiger) Build(opts ...Option) zap.Config {
 	for i, o := range opts {
 		funcName := runtime.FuncForPC(reflect.ValueOf(o).Pointer()).Name()
 		if strings.Contains(funcName, `logger.WithEnvironment`) {
@@ -150,8 +154,8 @@ func NewZap(opts ...Option) (*ZapExtended, error) {
 		return nil, err
 	}
 
-	cb := &zapConfiger{}
-	zl, err := cb.build(opts...).Build()
+	cb := &ZapConfiger{}
+	zl, err := cb.Build(opts...).Build()
 	if err != nil {
 		return nil, err
 	}

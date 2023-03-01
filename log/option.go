@@ -11,6 +11,7 @@ type Optionable interface {
 	SetOutput(io.Writer)
 	SetEnvironment(EnvEnum)
 	SetEnableStacktrace(bool)
+	DoSometing()
 }
 
 var DefaultOptions = []Option{
@@ -59,5 +60,11 @@ func WithEnvironment(env EnvEnum) Option {
 func WithOutput(output io.Writer) Option {
 	return func(o Optionable) {
 		o.SetOutput(output)
+	}
+}
+
+func WithSomethingElse() Option {
+	return func(o Optionable) {
+		o.DoSometing()
 	}
 }

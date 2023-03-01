@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"solid/l/sender"
+	"solid/notification"
 	"solid/o"
+	sender2 "solid/sender"
 	"strings"
 )
 
@@ -15,7 +17,7 @@ type KafkaSettings struct {
 	Pass       *string `json:"pass"`
 }
 
-func NewKafkaCreator() sender.Transport {
+func NewKafkaCreator() sender2.Transport {
 	return &kafkaCreator{}
 }
 
